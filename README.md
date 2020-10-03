@@ -1,6 +1,4 @@
-# A$$ Hole Telegram Bot
+# Ku Telegram Bot
 
-Hello my juice friends, it's Ku here. I expect a horny night for you in
-my git page 
-
+Hello visitors, I expect you a great night in my git page ༼ つ ◕_◕ ༽つ
 
