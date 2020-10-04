@@ -7,17 +7,7 @@ import json
 
 def start(update, context):
 	send = "No worries people, KuBot has arrived!"
-	update.message.reply_text(send)
-
-def echo(update, context):
-	context.bot.send_message(chat_id=update.effective_chat.id, text=update.message.text)
-
-def caps(update, context):
-	text_caps = ' '.join(context.args).upper()
-	context.bot.send_message(chat_id=update.effective_chat.id, text=text_caps)	
-
-def unknown(update, context):
-	context.bot.send_message(chat_id=update.effective_chat.id, text="Sorry, invalid command, @{}?".format(update.effective_user.username))
+	update.message.reply_text(send)	
 
 def tiranota(update, context):
 	casesFile = open("JSON/tiranota.json", "r")
@@ -35,6 +25,9 @@ def tiranota(update, context):
 	context.bot.sendMessage(parse_mode='HTML', chat_id = chatId, text = response)
 	casesFile.close()
 
+def unknown(update, context):
+	context.bot.send_message(chat_id=update.effective_chat.id, text="Sorry, invalid command, @{}?".format(update.effective_user.username))
+
 def main():
 	logger = logging.getLogger(__name__)
 	logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -43,9 +36,7 @@ def main():
 	dp = updater.dispatcher
 
 	dp.add_handler(CommandHandler("start", start))
-	dp.add_handler(MessageHandler(Filters.text & (~Filters.command), echo))
-	dp.add_handler(CommandHandler("caps", caps))
-	# dp.add_handler(CommandHandler("clima", clima))
+	dp.add_handler(CommandHandler("clima", clima))
 	dp.add_handler(CommandHandler("tiranota", tiranota))
 	dp.add_handler(MessageHandler(Filters.command, unknown))
 	#commands:
