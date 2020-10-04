@@ -1,7 +1,7 @@
 from telegram.ext import Updater, Dispatcher, CommandHandler, MessageHandler, Filters
-
+from weather import clima
 import logging
-from env import TOKEN
+from env import TOKEN, OWM_KEY
 
 def start(update, context):
 	send = "No worries people, KuBot has arrived!"
@@ -27,6 +27,7 @@ def main():
 	dp.add_handler(CommandHandler("start", start))
 	dp.add_handler(MessageHandler(Filters.text & (~Filters.command), echo))
 	dp.add_handler(CommandHandler("caps", caps))
+	dp.add_handler(CommandHandler("clima", clima))
 	dp.add_handler(MessageHandler(Filters.command, unknown))
 	#commands:
 
