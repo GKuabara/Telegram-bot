@@ -1,6 +1,6 @@
 from telegram.ext import Updater, Dispatcher, CommandHandler, MessageHandler, Filters
 from env import TOKEN # OWM_KEY
-#from weather import clima
+from weather import clima
 import logging
 import random
 import json
@@ -8,17 +8,7 @@ import rand_poke
 
 def start(update, context):
 	send = "No worries people, KuBot has arrived!"
-	update.message.reply_text(send)
-
-def echo(update, context):
-	context.bot.send_message(chat_id=update.effective_chat.id, text=update.message.text)
-
-def caps(update, context):
-	text_caps = ' '.join(context.args).upper()
-	context.bot.send_message(chat_id=update.effective_chat.id, text=text_caps)	
-
-def unknown(update, context):
-	context.bot.send_message(chat_id=update.effective_chat.id, text="Sorry, invalid command, @{}?".format(update.effective_user.username))
+	update.message.reply_text(send)	
 
 def tiranota(update, context):
 	casesFile = open("JSON/tiranota.json", "r")
@@ -35,7 +25,6 @@ def tiranota(update, context):
 	chatId = update.message.chat_id
 	context.bot.sendMessage(parse_mode='HTML', chat_id = chatId, text = response)
 	casesFile.close()
-
 
 types1 = "'Grass', 'Fire', 'Water', 'Bug', 'Normal', 'Poison', 'Electric', 'Ground', 'Fairy', 'Fighting', 'Psychic', 'Rock', 'Ghost', 'Ice', 'Dragon', 'Dark', 'Steel', 'Flying'"
 types2 = " 'Poison', 'None', 'Flying', 'Dragon', 'Ground', 'Fairy', 'Grass', 'Fighting', 'Psychic', 'Steel', 'Ice', 'Rock', 'Dark', 'Water','Electric', 'Fire', 'Ghost', 'Bug', 'Normal'"
@@ -66,6 +55,8 @@ def pokemon(update, context):
 	
 	context.bot.sendMessage(parse_mode='HTML', chat_id = chatId, text = msg, reply_to_message_id = messageId)
 
+def unknown(update, context):
+	context.bot.send_message(chat_id=update.effective_chat.id, text="Sorry, invalid command, @{}?".format(update.effective_user.username))
 
 def main():
 	logger = logging.getLogger(__name__)
@@ -76,9 +67,7 @@ def main():
 
 	dp.add_handler(CommandHandler("pokemon", pokemon))
 	dp.add_handler(CommandHandler("start", start))
-	dp.add_handler(MessageHandler(Filters.text & (~Filters.command), echo))
-	dp.add_handler(CommandHandler("caps", caps))
-	# dp.add_handler(CommandHandler("clima", clima))
+	dp.add_handler(CommandHandler("clima", clima))
 	dp.add_handler(CommandHandler("tiranota", tiranota))
 	dp.add_handler(MessageHandler(Filters.command, unknown))
 	#commands:
