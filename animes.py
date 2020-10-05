@@ -13,7 +13,7 @@ def randAnime():
 
     while True:
         try:
-            animeData = jikan.season(year = animeYear, season = "Winter")
+            animeData = jikan.season(year = animeYear, season = season[0])
             break
         except:
             time.sleep(4)
