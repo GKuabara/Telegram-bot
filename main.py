@@ -1,11 +1,12 @@
 from telegram.ext import Updater, Dispatcher, CommandHandler, MessageHandler, Filters
 from env import TOKEN # OWM_KEY
 from weather import clima
+import pandas as pd
+import rand_poke
 import logging
 import random
-import json
-import rand_poke
 import animes
+import json
 
 def start(update, context):
     send = "No worries people, KuBot has arrived!"
@@ -56,6 +57,13 @@ def pokemon(update, context):
     
     context.bot.sendMessage(parse_mode='HTML', chat_id = chatId, text = msg, reply_to_message_id = messageId)
 
+def randomSong(update, context):
+    playlist = pd.read_csv("kulto.csv")
+    songs = playlist["Track Name"] + ' - ' + playlist["Artist Name"]
+    song = random.choice(songs)
+    
+    context.bot.sendMessage(chat_id=update.message.chat_id, text=f"Vamo de '{song}'")
+
 def unknown(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="Sorry, invalid command, @{}?".format(update.effective_user.username))
 
@@ -88,6 +96,7 @@ def main():
 
     dp.add_handler(CommandHandler("pokemon", pokemon))
     dp.add_handler(CommandHandler("start", start))
+    dp.add_handler(CommandHandler("musica", randomSong))
     dp.add_handler(CommandHandler("clima", clima))
     dp.add_handler(CommandHandler("tiranota", tiranota))
     dp.add_handler(MessageHandler(Filters.command, unknown))
