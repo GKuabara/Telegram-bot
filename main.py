@@ -4,6 +4,7 @@ from weather import clima
 import pandas as pd
 import rand_poke
 import logging
+import corona
 import random
 import animes
 import json
@@ -64,6 +65,28 @@ def randomSong(update, context):
     
     context.bot.sendMessage(chat_id=update.message.chat_id, text=f"Vamo de '{song}'")
 
+def casosCorona(update, context):
+    chatId = update.effective_chat.id
+
+    states = ["ac", "al", "ap", "am", "ba", "ce", "es", "go", "ma", "mt", "ms", "mg", "pa", "pb", "pr", "pe", "pi", "rj", "rn", "rs", "ro", "rr", "sc", "sp", "se", "to"]
+    wantedStates = set(context.args)
+    if len(wantedStates) == 0:
+        response = "Coloca a sigla de pelo menos um estado pra eu saber, pô"
+        context.bot.sendMessage(parse_mode='HTML', chat_id=chatId, text=response)
+        return
+
+    for state in wantedStates:
+        state = state.lower()
+        if state not in states:
+            context.bot.sendMessage(parse_mode='HTML', chat_id=chatId, text=f"Vish! Deu ruim... Que estado é '{state}'?")
+        else:
+            txt = corona.stateRequest(state)
+            if txt != "":
+                context.bot.sendMessage(parse_mode='HTML', chat_id=chatId, text=txt)
+            else:
+                context.bot.sendMessage(parse_mode='HTML', chat_id=chatId, text=f"Opa, deu ruim no request da '{state}'")
+                return
+
 def unknown(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="Sorry, invalid command, @{}?".format(update.effective_user.username))
 
@@ -97,8 +120,9 @@ def main():
     dp.add_handler(CommandHandler("pokemon", pokemon))
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("musica", randomSong))
-    dp.add_handler(CommandHandler("clima", clima))
+    # dp.add_handler(CommandHandler("clima", clima))
     dp.add_handler(CommandHandler("tiranota", tiranota))
+    dp.add_handler(CommandHandler("corona", casosCorona))
     dp.add_handler(MessageHandler(Filters.command, unknown))
     dp.add_handler(CommandHandler("animealeatorio", animealeatorio))
     #commands:
