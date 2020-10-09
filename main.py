@@ -65,6 +65,16 @@ def randomSong(update, context):
     
     context.bot.sendMessage(chat_id=update.message.chat_id, text=f"Vamo de '{song}'")
 
+sentImages = list()
+def miranha(update, context):
+    spiderJSON = open("JSON/miranha.json", "r")
+
+    spider = json.loads(spiderJSON.read())
+    rand_image = random.choice(list(spider.items()))
+
+    context.bot.sendPhoto(chat_id=update.message.chat_id, photo=open(f"Homiranha/{rand_image[0]}", "rb"), caption=rand_image[1])
+    spiderJSON.close()
+
 def casosCorona(update, context):
     chatId = update.effective_chat.id
 
@@ -120,9 +130,10 @@ def main():
     dp.add_handler(CommandHandler("pokemon", pokemon))
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("musica", randomSong))
-    # dp.add_handler(CommandHandler("clima", clima))
+    dp.add_handler(CommandHandler("clima", clima))
     dp.add_handler(CommandHandler("tiranota", tiranota))
     dp.add_handler(CommandHandler("corona", casosCorona))
+    dp.add_handler(CommandHandler("miranha", miranha))
     dp.add_handler(MessageHandler(Filters.command, unknown))
     dp.add_handler(CommandHandler("animealeatorio", animealeatorio))
     #commands:
