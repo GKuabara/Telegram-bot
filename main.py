@@ -1,6 +1,6 @@
 from telegram.ext import Updater, Dispatcher, CommandHandler, MessageHandler, Filters
-from env import TOKEN # OWM_KEY
-from weather import clima
+# from env import TOKEN OWM_KEY
+# from weather import clima
 import pandas as pd
 import rand_poke
 import logging
@@ -8,6 +8,12 @@ import corona
 import random
 import animes
 import json
+import random as rd
+import os
+import imageio
+import sys
+
+TOKEN = "1140857640:AAGEEX5lP5uIxcJxxSAGPIT4HVO87i8Bxrg"
 
 def start(update, context):
     send = "No worries people, KuBot has arrived!"
@@ -120,6 +126,43 @@ def animealeatorio(update, context):
     msg = f"Seu anime {name} é do ano {infos[0]}:\n {link}"
     context.bot.sendMessage(parse_mode='HTML', chat_id = chatId, text = msg, reply_to_message_id = messageId)
 
+def loadFile(filename):
+    with open(filename, encoding="UTF-8") as f:
+        content = [l.strip() for l in f]
+
+    return content
+
+def distort(imageIn, imageOut, dims, pct=50):
+
+    print(f"{pct}%: {imageIn} -> {imageOut}")
+    os.system(f"magick {imageIn} -liquid-rescale {pct}x{pct}%! -resize {dims[1]}x{dims[0]}! {imageOut}")
+
+def deleteDirs(file, user_id):
+
+    os.remove(f"{file[:-4]}{file[len(file) -  4::]}")
+
+
+def sagadoku(update, context):
+
+    image = "./pics/"
+    filmeList = loadFile("filme.txt")
+    user_id = update.message.from_user.id
+    update.message.reply_text("já vai já vai")	
+
+    pick = rd.choice(filmeList)
+    position = filmeList.index(pick)
+    image += f"pic{position}.jpg"
+    dims = imageio.imread(image).shape
+    imageOut = f"distorted{user_id}.jpg"
+    distort(image, imageOut, dims)
+    caption = pick.replace("{word}", "ku")
+    print(caption)
+
+    context.bot.sendPhoto(chat_id=update.message.chat_id, photo=open(imageOut, "rb"), caption=caption, parse_mode="html")
+
+    deleteDirs(imageOut, user_id)
+
+
 def main():
     logger = logging.getLogger(__name__)
     logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -127,10 +170,12 @@ def main():
     updater = Updater(token=TOKEN, use_context=True)	
     dp = updater.dispatcher
 
+
     dp.add_handler(CommandHandler("pokemon", pokemon))
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("musica", randomSong))
-    dp.add_handler(CommandHandler("clima", clima))
+    # dp.add_handler(CommandHandler("clima", clima))
+    dp.add_handler(CommandHandler("sagadoku", sagadoku))
     dp.add_handler(CommandHandler("tiranota", tiranota))
     dp.add_handler(CommandHandler("corona", casosCorona))
     dp.add_handler(CommandHandler("miranha", miranha))

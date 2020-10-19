@@ -1,8 +1,9 @@
 import datetime as dt
-from env import OWM_KEY
+# from env import OWM_KEY
 from googletrans import Translator
-from pyowm import OWM
+# from pyowm import OWM
 from telegram.ext import Updater, Dispatcher, CommandHandler
+
 
 owm = OWM(OWM_KEY)
 mgr = owm.weather_manager()
