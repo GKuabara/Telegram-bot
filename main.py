@@ -147,6 +147,7 @@ def sagadoku(update, context):
     image = "./pics/"
     filmeList = loadFile("filme.txt")
     user_id = update.message.from_user.id
+    update.message.reply_text("já vai já vai")	
 
     pick = rd.choice(filmeList)
     position = filmeList.index(pick)
