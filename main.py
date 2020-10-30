@@ -1,4 +1,4 @@
-from telegram.ext import Updater, Dispatcher, CommandHandler, MessageHandler, Filters
+from telegram.ext import InlineQueryHandler, Updater, CommandHandler, MessageHandler, Filters, ConversationHandler, CallbackQueryHandler
 # from env import TOKEN OWM_KEY
 # from weather import clima
 import pandas as pd
@@ -12,6 +12,9 @@ import random as rd
 import os
 import imageio
 import sys
+
+from ping_pong import pong_join, pong_leave, pong_lobby
+from ping_pong import CHOOSE_OPPONENT, RUN_GAME, pong_play, choose_opponent, run_game
 
 TOKEN = "1140857640:AAGEEX5lP5uIxcJxxSAGPIT4HVO87i8Bxrg"
 
@@ -179,9 +182,20 @@ def main():
     dp.add_handler(CommandHandler("tiranota", tiranota))
     dp.add_handler(CommandHandler("corona", casosCorona))
     dp.add_handler(CommandHandler("miranha", miranha))
-    dp.add_handler(MessageHandler(Filters.command, unknown))
     dp.add_handler(CommandHandler("animealeatorio", animealeatorio))
-    #commands:
+
+    dp.add_handler(CommandHandler('pongjoin', pong_join))
+    dp.add_handler(CommandHandler('pongleave', pong_leave))
+    dp.add_handler(CommandHandler('ponglobby', pong_lobby))
+    dp.add_handler(ConversationHandler(
+        entry_points=[CommandHandler('pongplay', pong_play)],
+        states={
+            CHOOSE_OPPONENT: [CallbackQueryHandler(choose_opponent)],
+            RUN_GAME: [MessageHandler(Filters.text, run_game)]
+        },
+        fallbacks=[]
+    ))
+    dp.add_handler(MessageHandler(Filters.command, unknown))
 
     updater.start_polling()
     updater.idle()
